@@ -84,7 +84,10 @@ class MethodChannelSimpleRsa3 extends SimpleRsa3Platform {
 
   @override
   Future<String?> decryptStringWithPublicKey(
-      String plainText, String signature, String publicKey) async {
+    String plainText,
+    String signature,
+    String publicKey,
+  ) async {
     try {
       publicKey = publicKey
           .replaceAll("-----BEGIN PUBLIC KEY-----", "")
@@ -92,6 +95,24 @@ class MethodChannelSimpleRsa3 extends SimpleRsa3Platform {
       final String result = await methodChannel.invokeMethod(
           'decryptWithPublicKey',
           {"plainText": plainText, "publicKey": publicKey});
+      return result;
+    } on PlatformException catch (e) {
+      throw "Failed decoded string: '${e.message}'.";
+    }
+  }
+
+  @override
+  Future<List<int>> decryptBytesWithPublicKey(
+    List<int> encryptedBytes,
+    String publicKey,
+  ) async {
+    try {
+      publicKey = publicKey
+          .replaceAll("-----BEGIN PUBLIC KEY-----", "")
+          .replaceAll("-----END PUBLIC KEY-----", "");
+      final List<int> result = await methodChannel.invokeMethod(
+          'decryptBytesWithPublicKey',
+          {"encryptedBytes": encryptedBytes, "publicKey": publicKey});
       return result;
     } on PlatformException catch (e) {
       throw "Failed decoded string: '${e.message}'.";

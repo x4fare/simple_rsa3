@@ -37,6 +37,12 @@ class MockSimpleRsa3Platform
       String plainText, String signature, String publicKey) async {
     return true;
   }
+
+  @override
+  Future<List<int>> decryptBytesWithPublicKey(
+      List<int> encryptedBytes, String publicKey) async {
+    return [1, 2, 3, 4, 5];
+  }
 }
 
 void main() {

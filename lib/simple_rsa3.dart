@@ -28,4 +28,10 @@ class SimpleRsa3 {
     return SimpleRsa3Platform.instance
         .decryptStringWithPublicKey(plainText, signature, publicKey);
   }
+
+  Future<List<int>> decryptBytesWithPublicKey(
+      List<int> encryptedBytes, String publicKey) {
+    return SimpleRsa3Platform.instance
+        .decryptBytesWithPublicKey(encryptedBytes, publicKey);
+  }
 }

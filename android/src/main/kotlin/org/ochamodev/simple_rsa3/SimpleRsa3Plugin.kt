@@ -113,6 +113,21 @@ class SimpleRsa3Plugin: FlutterPlugin, MethodCallHandler {
           result.error("NULL INPUT STRING", "Decrypt failure.", null)
         }
       }
+      "decryptBytesWithPublicKey" -> {
+        val encryptedBytes = call.argument<ByteArray>("encryptedBytes")
+        val publicKey = call.argument<String>("publicKey")
+        if (encryptedBytes != null && publicKey != null) {
+          try {
+            val output = decryptBytesWithPublicKey(encryptedBytes, publicKey)
+            result.success(output)
+          } catch (e: java.lang.Exception) {
+            e.printStackTrace()
+            result.error("UNAVAILABLE", "Decrypt Bytes failure.", null)
+          }
+        } else {
+          result.error("NULL INPUT STRING", "Decrypt Bytes failure.", null)
+        }
+      }
       else -> result.notImplemented()
     }
   }
@@ -186,6 +201,18 @@ class SimpleRsa3Plugin: FlutterPlugin, MethodCallHandler {
     }
     return String(output)
   }
+
+  @Throws(NoSuchAlgorithmException::class, NoSuchPaddingException::class, InvalidKeyException::class, IllegalBlockSizeException::class, BadPaddingException::class)
+    private fun decryptBytesWithPublicKey(encryptedBytes: ByteArray, publicKey: String): ByteArray {
+        val publicBytes = Base64.decode(publicKey, Base64.DEFAULT)
+        val keySpec = X509EncodedKeySpec(publicBytes)
+        val keyFactory = KeyFactory.getInstance("RSA")
+        val pubKey = keyFactory.generatePublic(keySpec)
+        val cipher = Cipher.getInstance("RSA/ECB/PKCS1PADDING")
+        cipher.init(Cipher.DECRYPT_MODE, pubKey)
+        
+        return cipher.doFinal(encryptedBytes);
+    }
 
   @Throws(NoSuchAlgorithmException::class, NoSuchPaddingException::class, InvalidKeyException::class, IllegalBlockSizeException::class, BadPaddingException::class)
   private fun signData(plainText: String, privateKey: String): String {

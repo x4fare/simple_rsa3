@@ -38,4 +38,7 @@ abstract class SimpleRsa3Platform extends PlatformInterface {
 
   Future<String?> decryptStringWithPublicKey(
       String plainText, String signature, String publicKey);
+
+  Future<List<int>> decryptBytesWithPublicKey(
+      List<int> encryptedBytes, String publicKey);
 }
